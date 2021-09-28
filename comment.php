@@ -20,8 +20,7 @@ $id = $_GET['id'];
 $page_data = [];
 
 $text = '';
-$DATA = []; //追加するデータ
-$COMMENT_BOARD = []; //表示する配列
+$comments = []; //追加するデータ
 
 $error_message = [];
 
@@ -47,7 +46,7 @@ $comment_query = "SELECT * FROM `comments` WHERE `article_id` = '${id}'";
 if ($success) {
   $result = mysqli_query($link, $comment_query);
   while ($row = mysqli_fetch_array($result)) {
-    $COMMENT_BOARD[] = [$row['id'], $row['article_id'], $row['comment']];
+    $comments[] = [$row['id'], $row['article_id'], $row['comment']];
   }
 }
 
@@ -119,18 +118,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- コメント表示部分 -->
             <form method="post" class="commentForm">
                 <textarea name="txt" class="inputFlex commentInput"></textarea>
-                <input type="submit" value="コメントを書く" name='<?php echo $id; ?>' class="commnetSubmitStyle">
+                <input type="submit" value="コメントを書く" class="commnetSubmitStyle">
             </form>
 
 
-            <?php foreach ($COMMENT_BOARD as $DATA) : ?>
+            <?php foreach ($comments as $comment) : ?>
             <div class="commentContent">
                 <p>
-                    <?php echo $DATA[2] ?>
+                    <?php echo $comment[2] ?>
                 </p>
                 <div>
                     <form method="post">
-                        <input type="hidden" name="del" value="<?php echo escape($DATA[0]); ?>">
+                        <input type="hidden" name="del" value="<?php echo escape($comment[0]); ?>">
                         <input type="submit" value="コメントを消す" class="deleteComment">
                     </form>
                 </div>

@@ -18,6 +18,8 @@ $success = mysqli_real_connect(
     $port
 );
 
+
+
 //エスケープ処理
 function escape($str) {
     return htmlspecialchars($str, ENT_QUOTES, "UTF-8");
@@ -25,20 +27,20 @@ function escape($str) {
 
 //変数の準備
 $text = ''; //入力テキスト
-$DATA = []; //一回分の投稿の情報を入れる
-$BOARD = []; //全ての投稿の情報を入れる
+$article = []; //一回分の投稿の情報を入れる
+$articles = []; //全ての投稿の情報を入れる
 $error_message = [];
 
 // MySQLからデータを取得
-$query = "SELECT * FROM `articles`";
+$select_query = "SELECT * FROM `articles`";
 
 if ($success) {
     // MySQLに対してQueryを発行する
-    $result = mysqli_query($link, $query);
+    $result = mysqli_query($link, $select_query);
         // データベース内のデータ分配列で受け取る
     while ($row = mysqli_fetch_array($result)) {
-        // $BOARD[] = $row でも結果は同じだが記述が少ないよりも読んで理解できるコードの方が素敵
-        $BOARD[] = [$row['id'], $row['title'], $row['text']];
+        // $articles[] = $row でも結果は同じだが記述が少ないよりも読んで理解できるコードの方が素敵
+        $articles[] = [$row['id'], $row['title'], $row['text']];
     }
 }
 
@@ -119,17 +121,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- content -->
         <div class='Container'>
-            <?php foreach ($BOARD as $DATA) : ?>
-            <div class="content">
-                <p class="articleTitle">
-                    <?php echo escape($DATA[1]); ?>
-                </p>
-                <p class="articleText">
-                    <?php echo escape($DATA[2]); ?>
-                </p>
-                <p class='routingStyle'><a href='comment.php?id=<?php echo $DATA[0]; ?>'>記事全文・コメントを見る</a></p>
-            </div>
 
+
+            <?php foreach ($articles as $article) : ?>
+                <div class="content">
+                    <p class="articleTitle">
+                        <?php echo escape($article[1]); ?>
+                    </p>
+                    <p class="articleText">
+                        <?php echo escape($article[2]); ?>
+                    </p>
+                    <p class='routingStyle'><a href='comment.php?id=<?php echo $article[0]; ?>'>記事全文・コメントを見る</a></p>
+                </div>
             <?php endforeach; ?>
         </div>
     </section>
